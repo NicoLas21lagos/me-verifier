@@ -6,50 +6,66 @@ from PIL import Image
 import torch
 import numpy as np
 
-def crop_faces(input_dir, output_dir, target_size=(160, 160)):
-    # Crear directorio de salida si no existe
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Inicializar MTCNN para detección facial
-    mtcnn = MTCNN(
-        image_size=target_size[0],
+def setup_directories():
+    """Crear directorios necesarios"""
+    os.makedirs('data/cropped/me', exist_ok=True)
+    os.makedirs('data/cropped/not_me', exist_ok=True)
+
+def initialize_mtcnn():
+    """Inicializar detector MTCNN"""
+    return MTCNN(
+        image_size=160,
         margin=20,
-        keep_all=False,
-        min_face_size=40,
+        min_face_size=20,
         thresholds=[0.6, 0.7, 0.7],
         factor=0.709,
         post_process=True,
         device='cuda' if torch.cuda.is_available() else 'cpu'
     )
-    
-    # Procesar cada imagen
-    for person_dir in os.listdir(input_dir):
-        person_input_path = os.path.join(input_dir, person_dir)
-        person_output_path = os.path.join(output_dir, person_dir)
-        os.makedirs(person_output_path, exist_ok=True)
-        
-        if os.path.isdir(person_input_path):
-            for img_name in os.listdir(person_input_path):
-                img_path = os.path.join(person_input_path, img_name)
+
+def process_images(input_dir, output_dir, mtcnn):
+    """Procesar imágenes y extraer rostros"""
+    count = 0
+    for filename in os.listdir(input_dir):
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            try:
+                image_path = os.path.join(input_dir, filename)
+                image = Image.open(image_path).convert('RGB')
                 
-                try:
-                    # Cargar imagen
-                    img = Image.open(img_path).convert('RGB')
-                    
-                    # Detectar y recortar rostro
-                    face = mtcnn(img, save_path=os.path.join(person_output_path, img_name))
-                    
-                    if face is not None:
-                        print(f"Rostro detectado en: {img_path}")
-                    else:
-                        print(f"No se detectó rostro en: {img_path}")
+                faces = mtcnn(image)
+                
+                if faces is not None:
+                    if isinstance(faces, torch.Tensor):
+                        faces = [faces] if faces.dim() == 3 else faces
                         
-                except Exception as e:
-                    print(f"Error procesando {img_path}: {str(e)}")
+                        for i, face in enumerate(faces):
+                            face_pil = Image.fromarray(
+                                (face.permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+                            )
+                            
+                            output_path = os.path.join(
+                                output_dir, 
+                                f"{os.path.splitext(filename)[0]}_{i}.jpg"
+                            )
+                            face_pil.save(output_path)
+                            count += 1
+                            
+            except Exception as e:
+                print(f"Error procesando {filename}: {e}")
+    
+    print(f"Procesadas {count} caras en {output_dir}")
+
+def main():
+    setup_directories()
+    mtcnn = initialize_mtcnn()
+    
+    print("Procesando imágenes propias...")
+    process_images('data/me', 'data/cropped/me', mtcnn)
+    
+    print("Procesando imágenes de otros...")
+    process_images('data/not_me', 'data/cropped/not_me', mtcnn)
+    
+    print("Preprocesamiento completado!")
 
 if __name__ == "__main__":
-    # Procesar fotos propias
-    crop_faces('data/me', 'data/cropped/me')
-    
-    # Procesar fotos de otras personas
-    crop_faces('data/not_me', 'data/cropped/not_me')
+    main()
