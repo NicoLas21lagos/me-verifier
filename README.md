@@ -34,35 +34,39 @@ Procesamiento de Imágenes: OpenCV, Pillow
 
 Despliegue: AWS EC2 (Ubuntu 22.04 LTS)
 
-📁 Estructura del Proyecto
+## 📁 Estructura del Proyecto
+
+```bash
 me-verifier/
 ├── api/
-│ └── app.py # Aplicación Flask principal
+│   └── app.py               # Aplicación Flask principal
 ├── models/
-│ ├── model.joblib # Modelo de clasificación entrenado
-│ └── scaler.joblib # Scaler para normalización
+│   ├── model.joblib         # Modelo de clasificación entrenado
+│   └── scaler.joblib        # Scaler para normalización
 ├── scripts/
-│ ├── crop_faces.py # Detección y recorte de rostros
-│ ├── embeddings.py # Generación de embeddings faciales
-│ ├── train.py # Entrenamiento del clasificador
-│ ├── evaluate.py # Evaluación del modelo
-│ └── run_gunicorn.sh # Script de producción
+│   ├── crop_faces.py        # Detección y recorte de rostros
+│   ├── embeddings.py        # Generación de embeddings faciales
+│   ├── train.py             # Entrenamiento del clasificador
+│   ├── evaluate.py          # Evaluación del modelo
+│   └── run_gunicorn.sh      # Script de ejecución en producción
 ├── data/
-│ ├── me/ # Fotos propias (40-50 imágenes)
-│ ├── not_me/ # Fotos de otras personas (200-400 imágenes)
-│ └── cropped/ # Rostros recortados (generado)
+│   ├── me/                  # Fotos propias (40-50 imágenes)
+│   ├── not_me/              # Fotos de otras personas (200-400 imágenes)
+│   └── cropped/             # Rostros recortados (generado automáticamente)
 ├── samples/
-│ ├── test_me.jpg # Imagen de prueba propia
-│ ├── test_not_me.jpg # Imagen de prueba ajena
-│ └── INSTRUCTIONS.md # Instrucciones de prueba
+│   ├── test_me.jpg          # Imagen de prueba propia
+│   ├── test_not_me.jpg      # Imagen de prueba ajena
+│   └── INSTRUCTIONS.md      # Instrucciones de prueba
 ├── reports/
-│ ├── metrics.json # Métricas de evaluación
-│ └── confusion_matrix.png # Matriz de confusión
+│   ├── metrics.json         # Métricas de evaluación del modelo
+│   └── confusion_matrix.png # Matriz de confusión
 ├── tests/
-│ └── test_api.py # Pruebas de la API
-├── requirements.txt # Dependencias del proyecto
-├── .env.example # Plantilla de variables de entorno
-└── README.md # Este archivo
+│   └── test_api.py          # Pruebas unitarias de la API
+├── requirements.txt         # Dependencias del proyecto
+├── .env.example             # Variables de entorno (plantilla)
+└── README.md                # Documentación del proyecto
+```
+
 🚀 Instalación y Configuración
 🔧 Prerrequisitos
 Python 3.11
