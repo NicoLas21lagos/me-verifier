@@ -67,24 +67,18 @@ me-verifier/
 └── README.md                # Documentación del proyecto
 ```
 
-🚀 Instalación y Configuración
-🔧 Prerrequisitos
-Python 3.11
+## 🧭 Instalación y Ejecución del Proyecto
 
-pip
+### 1️⃣ Clonar el Repositorio
 
-git
-
-1️⃣ Clonar el Repositorio
-
+```bash
 git clone https://github.com/tu-usuario/me-verifier.git
 cd me-verifier
 2️⃣ Configurar Entorno Virtual
-
 python3 -m venv venv
 source venv/bin/activate
-💡 En Windows:
 
+💡 En Windows:
 venv\Scripts\activate
 3️⃣ Instalar Dependencias
 
@@ -92,122 +86,104 @@ pip install --upgrade pip
 pip install -r requirements.txt
 🎮 Uso de la Aplicación
 🧩 Entrenamiento del Modelo
-
-1. Preparación de Datos
-   Organiza las imágenes con la siguiente estructura:
+1️⃣ Preparación de Datos
+Organiza las imágenes con la siguiente estructura:
 
 data/
 ├── me/
-│ ├── tu_foto_1.jpg
-│ ├── tu_foto_2.jpg
-│ └── ...
+│   ├── tu_foto_1.jpg
+│   ├── tu_foto_2.jpg
+│   └── ...
 └── not_me/
-├── persona_1.jpg
-├── persona_2.jpg
-└── ... 2. Pipeline de Entrenamiento
+    ├── persona_1.jpg
+    ├── persona_2.jpg
+    └── ...
+
+2️⃣ Pipeline de Entrenamiento
 
 # Detección y recorte de rostros
-
 python scripts/crop_faces.py
 
 # Generación de embeddings faciales
-
 python scripts/embeddings.py
 
 # Entrenamiento del clasificador
-
 python scripts/train.py
 
 # Evaluación del modelo
-
 python scripts/evaluate.py
+
 ⚙️ Modo Producción
 
 chmod +x scripts/run_gunicorn.sh
 ./scripts/run_gunicorn.sh
 🌐 API REST Endpoints
 🩺 Health Check
-GET /healthz
+Endpoint:
 
+GET /healthz
 Respuesta:
 
 {
-"status": "healthy",
-"model_loaded": true
+  "status": "healthy",
+  "model_loaded": true
 }
 👤 Verificación de Imagen
+
+Endpoint:
 POST /verify
 
 Encabezados:
-
 Content-Type: multipart/form-data
-Parámetros:
 
+Parámetros:
 image: Archivo de imagen (JPG, PNG, JPEG)
 
 Respuesta Exitosa:
-
 {
-"model_version": "me-verifier-v1",
-"is_me": true,
-"score": 0.93,
-"threshold": 0.75,
-"timing_ms": 28.7
+  "model_version": "me-verifier-v1",
+  "is_me": true,
+  "score": 0.93,
+  "threshold": 0.75,
+  "timing_ms": 28.7
 }
+
 Respuesta de Error:
-
 {
-"error": "No se detectó ninguna cara en la imagen"
+  "error": "No se detectó ninguna cara en la imagen"
 }
+
 🧪 Ejemplos de Uso
+
 🖥️ Con cURL
 
 # Verificar salud del servicio
-
 curl http://localhost:5000/healthz
 
 # Verificar imagen propia
-
 curl -X POST -F "image=@samples/test_me.jpg" http://localhost:5000/verify
 
 # Verificar imagen ajena
-
 curl -X POST -F "image=@samples/test_not_me.jpg" http://localhost:5000/verify
-🐍 Con Python
 
-import requests
 
-response = requests.post(
-'http://localhost:5000/verify',
-files={'image': open('samples/test_me.jpg', 'rb')}
-)
-print(response.json())
 📬 Con Postman
-Método: POST
 
+Método: POST
 URL: http://localhost:5000/verify
 
-Body: form-data
-
-Key: image → Type: File
-
-Seleccionar archivo .jpg o .png
+Body (form-data):
+  Key: image → Type: File
+  Valor: Seleccionar archivo .jpg o .png
 
 📈 Resultados y Métricas
 Precisión (Accuracy): 0.92
-
 Recall (Yo): 0.90
-
 F1-Score: 0.91
-
 Umbral óptimo: 0.75
-
 Reportes disponibles en:
 
 reports/
 ├── metrics.json
 └── confusion_matrix.png
-
-```
-
 ```
