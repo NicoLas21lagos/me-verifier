@@ -36,8 +36,6 @@ Procesamiento de Imágenes: OpenCV, Pillow
 Despliegue: AWS EC2 (Ubuntu 22.04 LTS)
 
 📁 Estructura del Proyecto
-bash
-Copiar código
 me-verifier/
 ├── api/
 │   └── app.py                 # Aplicación Flask principal
@@ -75,23 +73,18 @@ pip
 git
 
 1️⃣ Clonar el Repositorio
-bash
-Copiar código
+
 git clone https://github.com/tu-usuario/me-verifier.git
 cd me-verifier
 2️⃣ Configurar Entorno Virtual
-bash
-Copiar código
+
 python3 -m venv venv
 source venv/bin/activate
 💡 En Windows:
 
-bash
-Copiar código
 venv\Scripts\activate
 3️⃣ Instalar Dependencias
-bash
-Copiar código
+
 pip install --upgrade pip
 pip install -r requirements.txt
 🎮 Uso de la Aplicación
@@ -99,8 +92,6 @@ pip install -r requirements.txt
 1. Preparación de Datos
 Organiza las imágenes con la siguiente estructura:
 
-kotlin
-Copiar código
 data/
 ├── me/
 │   ├── tu_foto_1.jpg
@@ -111,8 +102,7 @@ data/
     ├── persona_2.jpg
     └── ...
 2. Pipeline de Entrenamiento
-bash
-Copiar código
+
 # Detección y recorte de rostros
 python scripts/crop_faces.py
 
@@ -125,8 +115,7 @@ python scripts/train.py
 # Evaluación del modelo
 python scripts/evaluate.py
 ⚙️ Modo Producción
-bash
-Copiar código
+
 chmod +x scripts/run_gunicorn.sh
 ./scripts/run_gunicorn.sh
 🌐 API REST Endpoints
@@ -135,8 +124,6 @@ GET /healthz
 
 Respuesta:
 
-json
-Copiar código
 {
   "status": "healthy",
   "model_loaded": true
@@ -146,8 +133,6 @@ POST /verify
 
 Encabezados:
 
-bash
-Copiar código
 Content-Type: multipart/form-data
 Parámetros:
 
@@ -155,8 +140,6 @@ image: Archivo de imagen (JPG, PNG, JPEG)
 
 Respuesta Exitosa:
 
-json
-Copiar código
 {
   "model_version": "me-verifier-v1",
   "is_me": true,
@@ -166,15 +149,12 @@ Copiar código
 }
 Respuesta de Error:
 
-json
-Copiar código
 {
   "error": "No se detectó ninguna cara en la imagen"
 }
 🧪 Ejemplos de Uso
 🖥️ Con cURL
-bash
-Copiar código
+
 # Verificar salud del servicio
 curl http://localhost:5000/healthz
 
@@ -184,8 +164,7 @@ curl -X POST -F "image=@samples/test_me.jpg" http://localhost:5000/verify
 # Verificar imagen ajena
 curl -X POST -F "image=@samples/test_not_me.jpg" http://localhost:5000/verify
 🐍 Con Python
-python
-Copiar código
+
 import requests
 
 response = requests.post(
@@ -215,8 +194,6 @@ Umbral óptimo: 0.75
 
 Reportes disponibles en:
 
-pgsql
-Copiar código
 reports/
 ├── metrics.json
 └── confusion_matrix.png
